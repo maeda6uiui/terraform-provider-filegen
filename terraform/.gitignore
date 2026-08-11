@@ -1,0 +1,6 @@
+bin
+*.bin
+terraform.tfstate
+terraform.tfstate.backup
+*.tfplan
+.terraform
