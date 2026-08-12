@@ -70,7 +70,7 @@ func (r *FilledFileResource) Schema(
 				Computed:            true,
 				MarkdownDescription: "File hash (MD5) of the output file",
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
+					requiresReplaceOnMd5sumMismatch{},
 				},
 			},
 		},
@@ -151,7 +151,11 @@ func (r *FilledFileResource) Update(
 	ctx context.Context,
 	req resource.UpdateRequest,
 	resp *resource.UpdateResponse) {
-
+	// Every attribute requires replacement, so this should never be called
+	resp.Diagnostics.AddError(
+		"Update Not Supported",
+		"A filled file cannot be updated in place, it must be recreated instead",
+	)
 }
 
 func (r *FilledFileResource) Delete(

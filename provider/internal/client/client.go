@@ -40,6 +40,22 @@ func (c *Client) GetFileMd5sum(filename string) (string, error) {
 	return fmt.Sprintf("%x", sum), nil
 }
 
+func (c *Client) CalcFilledFileMd5sum(size int, filler byte) string {
+	hash := md5.New()
+
+	chunk_size := min(size, 32*1024)
+	chunk := make([]byte, chunk_size)
+	for i := range chunk {
+		chunk[i] = filler
+	}
+
+	for remaining := size; remaining > 0; remaining -= chunk_size {
+		hash.Write(chunk[:min(remaining, chunk_size)])
+	}
+
+	return fmt.Sprintf("%x", hash.Sum(nil))
+}
+
 func (c *Client) CreateFilledFile(filename string, size int, filler byte) (*CreateFilledFileResponse, error) {
 	file, err := os.Create(filename)
 	if err != nil {
