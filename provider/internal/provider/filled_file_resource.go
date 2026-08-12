@@ -33,38 +33,6 @@ func NewFilledFileResource() resource.Resource {
 	}
 }
 
-func (r *FilledFileResource) md5sumPlanModifier(
-	ctx context.Context,
-	req planmodifier.StringRequest,
-	resp *stringplanmodifier.RequiresReplaceIfFuncResponse) {
-	if req.StateValue.IsNull() {
-		return
-	}
-
-	var data FilledFileResourceModel
-
-	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	if !r.client.FileExists(data.Filename.ValueString()) {
-		return
-	}
-
-	file_hash, err := r.client.GetFileMd5sum(data.Filename.ValueString())
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Client Error",
-			fmt.Sprintf("Unable to read the file, got error: %s", err),
-		)
-		return
-	}
-	if file_hash != data.Md5sum.ValueString() {
-		resp.RequiresReplace = true
-	}
-}
-
 func (r *FilledFileResource) Schema(
 	ctx context.Context,
 	req resource.SchemaRequest,
@@ -102,11 +70,7 @@ func (r *FilledFileResource) Schema(
 				Computed:            true,
 				MarkdownDescription: "File hash (MD5) of the output file",
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplaceIf(
-						r.md5sumPlanModifier,
-						"Requires replace when the md5sum changes",
-						"Requires replace when the md5sum changes",
-					),
+					stringplanmodifier.RequiresReplace(),
 				},
 			},
 		},
