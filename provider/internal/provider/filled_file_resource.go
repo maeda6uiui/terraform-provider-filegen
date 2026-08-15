@@ -63,7 +63,7 @@ func (r *FilledFileResource) Schema(
 				Computed:            true,
 				MarkdownDescription: "File hash (MD5) of the output file",
 				PlanModifiers: []planmodifier.String{
-					requiresReplaceOnMd5sumMismatch{},
+					NewRequiresReplaceOnMd5sumMismatch(),
 				},
 			},
 		},

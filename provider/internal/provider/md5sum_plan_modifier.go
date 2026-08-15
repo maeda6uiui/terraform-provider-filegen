@@ -15,6 +15,10 @@ import (
 // change made to the file outside of Terraform would go unnoticed.
 type requiresReplaceOnMd5sumMismatch struct{}
 
+func NewRequiresReplaceOnMd5sumMismatch() planmodifier.String {
+	return requiresReplaceOnMd5sumMismatch{}
+}
+
 func (m requiresReplaceOnMd5sumMismatch) Description(ctx context.Context) string {
 	return "Recreates the file if its hash differs from the expected one"
 }
