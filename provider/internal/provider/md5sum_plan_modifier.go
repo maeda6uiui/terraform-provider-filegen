@@ -44,7 +44,7 @@ func (m requiresReplaceOnMd5sumMismatch) PlanModifyString(
 		return
 	}
 
-	expected_md5sum := client.NewClient().CalcFilledFileMd5sum(
+	expected_md5sum := client.NewClient().CalcFilledBytesMd5sum(
 		int(data.Size.ValueInt32()),
 		byte(data.Filler.ValueInt32()),
 	)

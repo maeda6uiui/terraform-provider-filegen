@@ -40,7 +40,7 @@ func (c *Client) GetFileMd5sum(filename string) (string, error) {
 	return fmt.Sprintf("%x", sum), nil
 }
 
-func (c *Client) CalcFilledFileMd5sum(size int, filler byte) string {
+func (c *Client) CalcFilledBytesMd5sum(size int, filler byte) string {
 	hash := md5.New()
 
 	chunk_size := min(size, 32*1024)
